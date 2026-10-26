@@ -7,95 +7,48 @@
     <style>
         body { 
             background-color: transparent; 
-            color: white; 
-            text-align: center; 
-            font-family: sans-serif; 
             margin: 0; 
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
 
-        /* Kendi tasarımımız */
-        .radio-player {
-            background: rgba(0, 0, 0, 0.6); /* Yarı şeffaf siyah arka plan */
-            padding: 30px;
-            border-radius: 25px;
-            backdrop-filter: blur(10px); /* Arkasını bulanıklaştır */
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        /* Caster.fm'in kutusunu zorla şeffaf ve şık yapıyoruz */
+        .cstrEmbed {
+            width: 90%;
+            max-width: 350px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.7) !important; /* Koyu yarı şeffaf arka plan */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            /* Caster.fm'in kendi gri arka planlarını gizlemek için */
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .play-btn {
-            background: #ff0000;
-            color: white;
-            border: none;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            font-size: 30px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
-        }
-
-        .play-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .play-btn.playing {
-            background: #00ff00; /* Çalarken yeşil olsun */
-        }
-
-        .volume-control {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        input[type="range"] {
-            width: 150px;
-            accent-color: #ff0000;
+        /* Çaların içindeki o gri/beyaz kutuları hedef alıp şeffaf yapıyoruz */
+        .cstrEmbed iframe, .cstrEmbed div {
+            background-color: transparent !important;
+            border: none !important;
         }
     </style>
 </head>
 <body>
-    <div class="radio-player">
-        <button id="playPauseBtn" class="play-btn">▶</button>
-        <div class="volume-control">
-            <span>🔊</span>
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
-        </div>
-        <audio id="radioPlayer" crossorigin="anonymous">
-            <!-- Caster.fm API'sinden gelen direkt link (Proxy gerekebilir) -->
-            <source src="https://morcast.caster.fm:12802/stream" type="audio/mpeg">
-        </audio>
+    <!-- Caster.fm Çaları (Kendi kodun) -->
+    <div data-type="newStreamPlayer" 
+         data-publicToken="335ce5af-29c4-43b6-a23f-3273782554b3" 
+         data-theme="dark" 
+         data-color="e81e4d" 
+         data-channelId="" 
+         data-rendered="false" 
+         class="cstrEmbed">
+        <a href="https://www.caster.fm">Shoutcast Hosting</a> 
+        <a href="https://www.caster.fm">Stream Hosting</a> 
+        <a href="https://www.caster.fm">Radio Server Hosting</a>
     </div>
-
-    <script>
-        const audio = document.getElementById('radioPlayer');
-        const btn = document.getElementById('playPauseBtn');
-        const volumeSlider = document.getElementById('volumeSlider');
-
-        btn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play().catch(e => alert("Yayın açılamadı. Yayın açık mı?"));
-                btn.textContent = '⏸';
-                btn.classList.add('playing');
-            } else {
-                audio.pause();
-                btn.textContent = '▶';
-                btn.classList.remove('playing');
-            }
-        });
-
-        volumeSlider.addEventListener('input', (e) => {
-            audio.volume = e.target.value;
-        });
-    </script>
+    <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
 </body>
 </html>
