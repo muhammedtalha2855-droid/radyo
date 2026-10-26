@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radyo2855</title>
     <style>
+        /* Ekranı tamamen şeffaf yap ve içeriği ortala */
         body { 
             background-color: transparent; 
             margin: 0; 
@@ -13,39 +14,40 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: sans-serif;
+            overflow: hidden;
         }
 
-        /* Kendi şık kontrol panelimiz */
+        /* Sadece butonun etrafında hafif bir kutu */
         .custom-player {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            border-radius: 50%; /* Tam yuvarlak yap */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .play-btn {
             background: #ff0000;
             color: white;
             border: none;
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            font-size: 30px;
+            font-size: 35px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .play-btn.playing {
-            background: #00ff00; /* Çalarken yeşil olsun */
+            background: #00ff00;
             box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
         }
 
-        /* Gizli Caster.fm çaları (arka planda çalacak) */
+        /* Gizli Caster.fm çaları */
         #hiddenPlayer {
             position: absolute;
             width: 1px;
@@ -69,7 +71,7 @@
         <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
     </div>
 
-    <!-- Senin Göreceğin Şık Buton -->
+    <!-- Senin Göreceğin Buton -->
     <div class="custom-player">
         <button id="playPauseBtn" class="play-btn">▶</button>
     </div>
@@ -78,15 +80,11 @@
         const btn = document.getElementById('playPauseBtn');
         let isPlaying = false;
 
-        // Butona basıldığında gizli Caster.fm çalarını tetikle
         btn.addEventListener('click', () => {
-            // Caster.fm'in gizli iframe'ini bul
             const iframe = document.querySelector('#hiddenPlayer iframe');
-            
             if (iframe) {
-                // Caster.fm çalarının içindeki play butonuna bas (otomatik tıklama)
                 const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                const playBtn = innerDoc.querySelector('button'); // Çaların içindeki buton
+                const playBtn = innerDoc.querySelector('button'); 
                 
                 if (playBtn) {
                     playBtn.click();
@@ -101,7 +99,7 @@
                     }
                 }
             } else {
-                alert("Lütfen biraz bekleyin, yayın yükleniyor...");
+                alert("Yayın yükleniyor, lütfen 2 saniye bekleyip tekrar deneyin.");
             }
         });
     </script>
