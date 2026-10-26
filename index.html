@@ -16,36 +16,41 @@
             overflow: hidden;
         }
 
-        .player-container {
+        /* Senin Kırmızı Butonun */
+        .play-btn {
+            background: #ff0000;
+            color: white;
+            border: none;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            font-size: 40px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.8);
+            z-index: 10;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn.playing {
+            background: #00ff00;
+            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.8);
+        }
+
+        /* Caster.fm Çalarını Tamamen Gizle (ama arka planda çalışsın) */
+        #hiddenPlayer {
+            position: absolute;
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Caster.fm kutusunu kırp */
-        .cstrEmbed {
-            width: 320px !important;
-            height: 80px !important; /* Sadece alt kısmı göster */
-            overflow: hidden !important;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            background: rgba(0, 0, 0, 0.6) !important; 
-            backdrop-filter: blur(10px);
-            position: relative;
-        }
-
-        /* Gri kısmı yukarı kaydırıp yok et */
-        .cstrEmbed iframe {
-            margin-top: -110px; /* Üstteki tüm gri alanı yukarı çek ve gizle */
-            background: transparent !important;
+            opacity: 0; /* Tamamen görünmez */
+            pointer-events: none; /* Tıklamaları engellemesin */
+            z-index: -1;
         }
     </style>
 </head>
 <body>
-    <div class="player-container">
-        <!-- Caster.fm Çaları (Senin Tokenin) -->
+    <!-- Gizli Caster.fm Çaları -->
+    <div id="hiddenPlayer">
         <div data-type="newStreamPlayer" 
              data-publicToken="335ce5af-29c4-43b6-a23f-3273782554b3" 
              data-theme="dark" 
@@ -53,11 +58,54 @@
              data-channelId="" 
              data-rendered="false" 
              class="cstrEmbed">
-            <a href="https://www.caster.fm">Shoutcast Hosting</a> 
-            <a href="https://www.caster.fm">Stream Hosting</a> 
-            <a href="https://www.caster.fm">Radio Server Hosting</a>
         </div>
         <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
     </div>
+
+    <!-- Senin Kırmızı Butonun -->
+    <button id="playPauseBtn" class="play-btn">▶</button>
+
+    <script>
+        const btn = document.getElementById('playPauseBtn');
+        const hiddenPlayer = document.getElementById('hiddenPlayer');
+        let isPlaying = false;
+
+        btn.addEventListener('click', () => {
+            // Butona tıklandığında gizli iframe'in üzerine tıklama simülasyonu yap
+            const iframe = hiddenPlayer.querySelector('iframe');
+            
+            if (iframe) {
+                // Iframe'in merkezine bir tıklama gönder (Caster.fm'in play butonu genelde merkezdedir)
+                const rect = iframe.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
+                
+                // Görünmez alana tıklama olayı gönder
+                const clickEvent = new MouseEvent('click', {
+                    clientX: x,
+                    clientY: y,
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                
+                // Önce iframe'e odaklan, sonra tıkla
+                iframe.contentWindow.focus();
+                iframe.contentWindow.document.elementFromPoint(x, y).dispatchEvent(clickEvent);
+                
+                // Buton görünümünü değiştir
+                isPlaying = !isPlaying;
+                if (isPlaying) {
+                    btn.textContent = '⏸';
+                    btn.classList.add('playing');
+                } else {
+                    btn.textContent = '▶';
+                    btn.classList.remove('playing');
+                }
+            } else {
+                alert("Yayın yükleniyor, lütfen 2 saniye sonra tekrar deneyin.");
+            }
+        });
+    </script>
 </body>
 </html>
