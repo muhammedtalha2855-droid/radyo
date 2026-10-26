@@ -16,68 +16,48 @@
             overflow: hidden;
         }
 
-        /* Kırmızı Buton */
-        .play-btn {
-            background: #ff0000;
-            color: white;
-            border: none;
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            font-size: 35px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.6);
-            z-index: 100; /* Butonu en öne çıkar */
-            position: relative;
+        /* Caster.fm çalarının dış kutusu */
+        .player-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Caster.fm Çalarını GİZLE */
-        #hiddenPlayer {
-            position: absolute;
-            width: 1px;  /* Boyutunu 1 piksele düşür */
-            height: 1px; 
-            opacity: 0;  /* Tamamen görünmez yap */
-            pointer-events: none; /* Tıklamaları engellemesin */
-            z-index: -1; /* Arkaya at */
+        /* Caster.fm'in o gri kutusunu kesip atıyoruz */
+        .cstrEmbed {
+            width: 320px !important;
+            height: 90px !important; /* Sadece alt kısmı (butonların olduğu yeri) göster */
+            overflow: hidden !important;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.6) !important; /* Koyu şeffaf arka plan */
+            backdrop-filter: blur(10px);
+        }
+
+        /* Eğer Caster.fm iframe kullanıyorsa onu da ayarla */
+        .cstrEmbed iframe {
+            margin-top: -80px; /* Üstteki gri/beyaz kısmı yukarı kaydırıp gizle */
+            background: transparent !important;
         }
     </style>
 </head>
 <body>
-    <!-- Gizli Caster.fm Çaları -->
-    <div id="hiddenPlayer">
-        <iframe src="https://www.caster.fm/widgets/player?token=335ce5af-29c4-43b6-a23f-3273782554b3" width="100%" height="100%" frameborder="0" allow="autoplay"></iframe>
+    <div class="player-container">
+        <!-- Caster.fm Çaları (Senin Tokenin) -->
+        <div data-type="newStreamPlayer" 
+             data-publicToken="335ce5af-29c4-43b6-a23f-3273782554b3" 
+             data-theme="dark" 
+             data-color="e81e4d" 
+             data-channelId="" 
+             data-rendered="false" 
+             class="cstrEmbed">
+            <a href="https://www.caster.fm">Shoutcast Hosting</a> 
+            <a href="https://www.caster.fm">Stream Hosting</a> 
+            <a href="https://www.caster.fm">Radio Server Hosting</a>
+        </div>
+        <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
     </div>
-
-    <!-- Senin Kırmızı Butonun -->
-    <button id="playPauseBtn" class="play-btn">▶</button>
-
-    <script>
-        const btn = document.getElementById('playPauseBtn');
-        const iframe = document.querySelector('#hiddenPlayer iframe');
-        let isPlaying = false;
-
-        btn.addEventListener('click', () => {
-            // iframe'in içindeki play butonuna tıkla
-            if (iframe) {
-                const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                // Caster.fm'in kendi play butonunu bul (genelde id'si veya class'ı vardır)
-                const playBtn = innerDoc.querySelector('button') || innerDoc.querySelector('.play-button'); 
-                
-                if (playBtn) {
-                    playBtn.click();
-                    isPlaying = !isPlaying;
-                    btn.textContent = isPlaying ? '⏸' : '▶';
-                    btn.style.background = isPlaying ? '#00ff00' : '#ff0000';
-                } else {
-                    // Eğer butonu bulamazsa iframe'e odaklanıp Enter'a basmayı dene
-                    iframe.contentWindow.focus();
-                    iframe.contentWindow.document.body.dispatchEvent(new KeyboardEvent('keydown', {'key': 'Enter'}));
-                    isPlaying = !isPlaying;
-                    btn.textContent = isPlaying ? '⏸' : '▶';
-                    btn.style.background = isPlaying ? '#00ff00' : '#ff0000';
-                }
-            }
-        });
-    </script>
 </body>
 </html>
