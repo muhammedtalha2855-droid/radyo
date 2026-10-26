@@ -15,34 +15,87 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Ekranın ortasına hizala */
+            height: 100vh;
         }
-        
-        /* Caster.fm çalarının boyutunu ve görünümünü ayarlıyoruz */
-        .cstrEmbed {
-            width: 100%;
-            max-width: 320px; /* Çok geniş olmasını engelle */
-            margin: 0 auto;
-            transform: scale(0.95); /* Biraz küçült */
-            border-radius: 15px; /* Köşeleri yuvarlak yap */
-            overflow: hidden;
-            box-shadow: 0px 10px 20px rgba(0,0,0,0.5); /* Gölge ekle */
+
+        /* Kendi tasarımımız */
+        .radio-player {
+            background: rgba(0, 0, 0, 0.6); /* Yarı şeffaf siyah arka plan */
+            padding: 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px); /* Arkasını bulanıklaştır */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .play-btn {
+            background: #ff0000;
+            color: white;
+            border: none;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .play-btn.playing {
+            background: #00ff00; /* Çalarken yeşil olsun */
+        }
+
+        .volume-control {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="range"] {
+            width: 150px;
+            accent-color: #ff0000;
         }
     </style>
 </head>
 <body>
-    <!-- Caster.fm Çaları -->
-    <div data-type="newStreamPlayer" 
-         data-publicToken="335ce5af-29c4-43b6-a23f-3273782554b3" 
-         data-theme="dark" 
-         data-color="e81e4d" 
-         data-channelId="" 
-         data-rendered="false" 
-         class="cstrEmbed">
-        <a href="https://www.caster.fm">Shoutcast Hosting</a> 
-        <a href="https://www.caster.fm">Stream Hosting</a> 
-        <a href="https://www.caster.fm">Radio Server Hosting</a>
+    <div class="radio-player">
+        <button id="playPauseBtn" class="play-btn">▶</button>
+        <div class="volume-control">
+            <span>🔊</span>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+        </div>
+        <audio id="radioPlayer" crossorigin="anonymous">
+            <!-- Caster.fm API'sinden gelen direkt link (Proxy gerekebilir) -->
+            <source src="https://morcast.caster.fm:12802/stream" type="audio/mpeg">
+        </audio>
     </div>
-    <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
+
+    <script>
+        const audio = document.getElementById('radioPlayer');
+        const btn = document.getElementById('playPauseBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+
+        btn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().catch(e => alert("Yayın açılamadı. Yayın açık mı?"));
+                btn.textContent = '⏸';
+                btn.classList.add('playing');
+            } else {
+                audio.pause();
+                btn.textContent = '▶';
+                btn.classList.remove('playing');
+            }
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
+    </script>
 </body>
 </html>
