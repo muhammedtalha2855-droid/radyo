@@ -5,14 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radyo2855</title>
     <style>
-        /* Arka planı tamamen şeffaf yapıyoruz */
         body { 
             background-color: transparent; 
             color: white; 
             text-align: center; 
             font-family: sans-serif; 
             margin: 0; 
-            padding-top: 20px; 
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Ekranın ortasına hizala */
+        }
+        
+        /* Caster.fm çalarının boyutunu ve görünümünü ayarlıyoruz */
+        .cstrEmbed {
+            width: 100%;
+            max-width: 320px; /* Çok geniş olmasını engelle */
+            margin: 0 auto;
+            transform: scale(0.95); /* Biraz küçült */
+            border-radius: 15px; /* Köşeleri yuvarlak yap */
+            overflow: hidden;
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.5); /* Gölge ekle */
         }
     </style>
 </head>
