@@ -16,7 +16,6 @@
             overflow: hidden;
         }
 
-        /* Senin Kırmızı Butonun */
         .play-btn {
             background: #ff0000;
             color: white;
@@ -27,83 +26,58 @@
             font-size: 40px;
             cursor: pointer;
             box-shadow: 0 5px 20px rgba(255, 0, 0, 0.8);
-            z-index: 10;
-            position: relative;
             transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .play-btn.playing {
             background: #00ff00;
             box-shadow: 0 5px 20px rgba(0, 255, 0, 0.8);
         }
-
-        /* Caster.fm Çalarını Tamamen Gizle (ama arka planda çalışsın) */
-        #hiddenPlayer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0; /* Tamamen görünmez */
-            pointer-events: none; /* Tıklamaları engellemesin */
-            z-index: -1;
-        }
     </style>
 </head>
 <body>
-    <!-- Gizli Caster.fm Çaları -->
-    <div id="hiddenPlayer">
-        <div data-type="newStreamPlayer" 
-             data-publicToken="335ce5af-29c4-43b6-a23f-3273782554b3" 
-             data-theme="dark" 
-             data-color="e81e4d" 
-             data-channelId="" 
-             data-rendered="false" 
-             class="cstrEmbed">
-        </div>
-        <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
-    </div>
-
     <!-- Senin Kırmızı Butonun -->
     <button id="playPauseBtn" class="play-btn">▶</button>
 
+    <!-- Ses Elementi -->
+    <audio id="radioPlayer" crossorigin="anonymous"></audio>
+
     <script>
         const btn = document.getElementById('playPauseBtn');
-        const hiddenPlayer = document.getElementById('hiddenPlayer');
+        const audio = document.getElementById('radioPlayer');
         let isPlaying = false;
 
+        // Caster.fm'in doğrudan yayın linki (Proxy ile CORS engelini aşıyoruz)
+        // Not: Caster.fm panelindeki "Mount Point" ve "Sunucu Adresi" ile birleştirilir.
+        // Genelde: http://sunucuadi:port/mountpoint şeklindedir.
+        const streamUrl = "https://morcast.caster.fm:12802/d5Rhk";
+
+        // CORS Proxy kullanarak yayını çek (Engelleri aşmak için)
+        const proxiedUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(streamUrl)}`;
+
         btn.addEventListener('click', () => {
-            // Butona tıklandığında gizli iframe'in üzerine tıklama simülasyonu yap
-            const iframe = hiddenPlayer.querySelector('iframe');
-            
-            if (iframe) {
-                // Iframe'in merkezine bir tıklama gönder (Caster.fm'in play butonu genelde merkezdedir)
-                const rect = iframe.getBoundingClientRect();
-                const x = rect.left + rect.width / 2;
-                const y = rect.top + rect.height / 2;
-                
-                // Görünmez alana tıklama olayı gönder
-                const clickEvent = new MouseEvent('click', {
-                    clientX: x,
-                    clientY: y,
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                });
-                
-                // Önce iframe'e odaklan, sonra tıkla
-                iframe.contentWindow.focus();
-                iframe.contentWindow.document.elementFromPoint(x, y).dispatchEvent(clickEvent);
-                
-                // Buton görünümünü değiştir
-                isPlaying = !isPlaying;
-                if (isPlaying) {
+            if (!isPlaying) {
+                // Yayını yükle ve çal
+                audio.src = proxiedUrl;
+                audio.load();
+                audio.play().then(() => {
                     btn.textContent = '⏸';
                     btn.classList.add('playing');
-                } else {
-                    btn.textContent = '▶';
-                    btn.classList.remove('playing');
-                }
+                    isPlaying = true;
+                }).catch(e => {
+                    console.error("Hata:", e);
+                    alert("Yayın başlatılamadı. Lütfen yayının açık olduğundan emin olun.");
+                });
             } else {
-                alert("Yayın yükleniyor, lütfen 2 saniye sonra tekrar deneyin.");
+                // Durdur
+                audio.pause();
+                audio.src = ""; // Bağlantıyı kes
+                btn.textContent = '▶';
+                btn.classList.remove('playing');
+                isPlaying = false;
             }
         });
     </script>
