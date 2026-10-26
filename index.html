@@ -16,7 +16,6 @@
             overflow: hidden;
         }
 
-        /* Caster.fm çalarının dış kutusu */
         .player-container {
             width: 100%;
             height: 100%;
@@ -25,20 +24,21 @@
             align-items: center;
         }
 
-        /* Caster.fm'in o gri kutusunu kesip atıyoruz */
+        /* Caster.fm kutusunu kırp */
         .cstrEmbed {
             width: 320px !important;
-            height: 90px !important; /* Sadece alt kısmı (butonların olduğu yeri) göster */
+            height: 80px !important; /* Sadece alt kısmı göster */
             overflow: hidden !important;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            background: rgba(0, 0, 0, 0.6) !important; /* Koyu şeffaf arka plan */
+            background: rgba(0, 0, 0, 0.6) !important; 
             backdrop-filter: blur(10px);
+            position: relative;
         }
 
-        /* Eğer Caster.fm iframe kullanıyorsa onu da ayarla */
+        /* Gri kısmı yukarı kaydırıp yok et */
         .cstrEmbed iframe {
-            margin-top: -80px; /* Üstteki gri/beyaz kısmı yukarı kaydırıp gizle */
+            margin-top: -110px; /* Üstteki tüm gri alanı yukarı çek ve gizle */
             background: transparent !important;
         }
     </style>
