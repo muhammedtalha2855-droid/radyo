@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radyo2855</title>
     <style>
-        /* Ekranı tamamen şeffaf yap ve içeriği ortala */
         body { 
             background-color: transparent; 
             margin: 0; 
@@ -17,91 +16,38 @@
             overflow: hidden;
         }
 
-        /* Sadece butonun etrafında hafif bir kutu */
-        .custom-player {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            padding: 20px;
-            border-radius: 50%; /* Tam yuvarlak yap */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        /* Caster.fm çalarını şık bir kutu içine alıyoruz */
+        .cstrEmbed {
+            width: 90%;
+            max-width: 320px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.8) !important; /* Koyu yarı şeffaf */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .play-btn {
-            background: #ff0000;
-            color: white;
-            border: none;
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            font-size: 35px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .play-btn.playing {
-            background: #00ff00;
-            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
-        }
-
-        /* Gizli Caster.fm çaları */
-        #hiddenPlayer {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            opacity: 0.01;
-            pointer-events: none;
+        /* İçindeki gri/beyaz kutuları zorla şeffaf yap */
+        .cstrEmbed iframe, .cstrEmbed div {
+            background-color: transparent !important;
+            border: none !important;
         }
     </style>
 </head>
 <body>
-    <!-- Gizli Caster.fm Çaları -->
-    <div id="hiddenPlayer">
-        <div data-type="newStreamPlayer" 
-             data-publicToken="335ce5af-29c4-43b6-a23f-3273782554b3" 
-             data-theme="dark" 
-             data-color="e81e4d" 
-             data-channelId="" 
-             data-rendered="false" 
-             class="cstrEmbed">
-        </div>
-        <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
+    <!-- Caster.fm Çaları (Senin Tokenin) -->
+    <div data-type="newStreamPlayer" 
+         data-publicToken="335ce5af-29c4-43b6-a23f-3273782554b3" 
+         data-theme="dark" 
+         data-color="e81e4d" 
+         data-channelId="" 
+         data-rendered="false" 
+         class="cstrEmbed">
+        <a href="https://www.caster.fm">Shoutcast Hosting</a> 
+        <a href="https://www.caster.fm">Stream Hosting</a> 
+        <a href="https://www.caster.fm">Radio Server Hosting</a>
     </div>
-
-    <!-- Senin Göreceğin Buton -->
-    <div class="custom-player">
-        <button id="playPauseBtn" class="play-btn">▶</button>
-    </div>
-
-    <script>
-        const btn = document.getElementById('playPauseBtn');
-        let isPlaying = false;
-
-        btn.addEventListener('click', () => {
-            const iframe = document.querySelector('#hiddenPlayer iframe');
-            if (iframe) {
-                const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                const playBtn = innerDoc.querySelector('button'); 
-                
-                if (playBtn) {
-                    playBtn.click();
-                    isPlaying = !isPlaying;
-                    
-                    if (isPlaying) {
-                        btn.textContent = '⏸';
-                        btn.classList.add('playing');
-                    } else {
-                        btn.textContent = '▶';
-                        btn.classList.remove('playing');
-                    }
-                }
-            } else {
-                alert("Yayın yükleniyor, lütfen 2 saniye bekleyip tekrar deneyin.");
-            }
-        });
-    </script>
+    <script src="https://cdn.cloud.caster.fm/widgets/embed.js"></script>
 </body>
 </html>
